@@ -8,7 +8,7 @@ function App() {
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>
-          Editar <code>src/App.js</code> y guardar para recargar.
+          Editar <code>src/App.js</code> y guardar para recargar en modo {process.env.REACT_APP_API_URL}.
         </p>
         <a
           className="App-link"
