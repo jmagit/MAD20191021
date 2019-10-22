@@ -1,10 +1,11 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
+import Demos from './demos';
+
+
 
 function App() {
-  let nombre = 'mundo';
-  let saluda = `Hola ${nombre.toUpperCase()}`;
 
   return (
     <div className="App">
@@ -23,8 +24,8 @@ function App() {
         </a>
       </header>
       <div className="container-fluid">
-        <p>{saluda}</p>
-
+        
+        <Demos nombre="Desde app" />
       </div>
     </div>
   );
