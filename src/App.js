@@ -3,6 +3,9 @@ import logo from './logo.svg';
 import './App.css';
 
 function App() {
+  let nombre = 'mundo';
+  let saluda = `Hola ${nombre.toUpperCase()}`;
+
   return (
     <div className="App">
       <header className="App-header">
@@ -19,6 +22,10 @@ function App() {
           Learn React
         </a>
       </header>
+      <div className="container-fluid">
+        <p>{saluda}</p>
+
+      </div>
     </div>
   );
 }
