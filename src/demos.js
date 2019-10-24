@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types';
 import Contador from './contador';
+import { ErrorBoundary } from './ErrorBoundary';
 
 function Saluda(props) {
     console.log(`Componete saluda: ${props.nombre}`);
@@ -44,17 +45,17 @@ export default class Demos extends Component {
         this.onCambia = (valor) => this.setState({valor: valor});
         console.warn('Demos: constructor')
     }
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         console.warn('Demos: componentWillMount');
     }
-    componentWillReceiveProps(next_props) {
+    UNSAFE_componentWillReceiveProps(next_props) {
         console.warn('Demos: componentWillReceiveProps');
     }
     shouldComponentUpdate(next_props, next_state) {
         console.warn('Demos:shouldComponentUpdate ');
         return true;
     }
-    componentWillUpdate(next_props, next_state) {
+    UNSAFE_componentWillUpdate(next_props, next_state) {
         console.warn('Demos: componentWillUpdate');
     }
     
@@ -64,7 +65,9 @@ export default class Demos extends Component {
         let attr = { nombre: this.props.nombre, mayusculas: false }
         return (
             <div>
-                <Contador init={this.state.valor} delta={2} onCambia={this.onCambia } />
+                <ErrorBoundary>
+                    <Contador init={this.state.valor} delta={2} onCambia={this.onCambia } />
+                </ErrorBoundary>
                 {Saluda(attr)}
                 <Saluda nombre={this.props.nombre} mayusculas />
                 <Saluda nombre="Don Pepito" />
