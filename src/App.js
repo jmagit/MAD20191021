@@ -2,6 +2,7 @@ import React from 'react';
 import logo from './logo.svg';
 import './App.css';
 import Demos from './demos';
+import FotoMuro from './muro';
 
 
 
@@ -24,8 +25,8 @@ function App() {
         </a>
       </header>
       <div className="container-fluid">
-        
-        <Demos nombre="Desde app" />
+        <FotoMuro />
+        {/* <Demos nombre="Desde app" /> */}
       </div>
     </div>
   );

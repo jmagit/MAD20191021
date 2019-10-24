@@ -5,10 +5,16 @@ export default class Contador extends Component {
     static propTypes = {
         init: PropTypes.number.isRequired,
         delta: PropTypes.any,
+        min: PropTypes.number,
+        max: PropTypes.number,
+        hasInit: PropTypes.bool,
         onCambia: PropTypes.func
     };
     static defaultProps = {
-        delta: 1
+        delta: 1,
+        hasInit: false,
+        min: Number.MIN_SAFE_INTEGER,
+        max: Number.MAX_SAFE_INTEGER
     }
 
     constructor(props) {
@@ -21,7 +27,7 @@ export default class Contador extends Component {
         console.warn('Contador: constructor')
     }
     UNSAFE_componentWillMount() {
-        this.setState({ algo: 'malo'});
+        this.setState({ algo: 'malo' });
         console.warn('Contador: componentWillMount');
     }
     UNSAFE_componentWillReceiveProps(next_props) {
@@ -35,14 +41,15 @@ export default class Contador extends Component {
         console.warn('Contador: componentWillUpdate');
     }
     onCambia(valor) {
-        if (this.props.onCambia) 
+        if (this.props.onCambia)
             this.props.onCambia(valor);
     }
     cambia(delta) {
         // this.state.cont += delta;
         // this.setState( { cont:  this.state.cont + delta});
-        this.setState((prev, props) =>{             
+        this.setState((prev, props) => {
             let rslt = prev.cont + delta * props.delta
+            if (this.props.min > rslt || rslt > this.props.max) return {};
             this.onCambia(rslt);
             return { cont: rslt }
         });
@@ -59,22 +66,26 @@ export default class Contador extends Component {
         // console.warn(this.state.algo);
         return (
             <div>
-                <h1 id= "kk">{this.state.cont}</h1>
+                <h1 id="kk">{this.state.cont}</h1>
                 <p>
                     <input type="button" value="-" onClick={this.baja} />
                     <input type="button" value="+" onClick={this.sube.bind(this)} />
-                    <input type="button" value="Init" onClick={(e) => this.init()} hidden={this.state.cont === this.props.init} ref={(tag) => {this.btnInit = tag; }}/>
+                    { this.props.hasInit && <input type="button" value="Init" 
+                        onClick={(e) => this.init()} 
+                        hidden={this.state.cont === this.props.init} 
+                        ref={(tag) => { this.btnInit = tag; }} />
+                    }
                 </p>
             </div>
         )
     }
     componentDidMount() {
-       console.warn('Contador: componentDidMount');
-        this.btnInit.focus();
+        console.warn('Contador: componentDidMount');
+        if(this.btnInit) this.btnInit.focus();
     }
     componentDidUpdate(next_props, next_state) {
         console.warn('Contador: componentDidUpdate');
-       this.btnInit.hidden = this.state.cont === this.props.init;
+        if(this.btnInit) this.btnInit.hidden = this.state.cont === this.props.init;
     }
     componentWillUnmount() {
         console.warn('Contador: componentWillUnmount');
