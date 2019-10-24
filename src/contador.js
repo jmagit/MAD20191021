@@ -54,9 +54,9 @@ export default class Contador extends Component {
         this.cambia(1);
     }
     render() {
-        if (this.state.cont > 5) throw new Error('Error');
+        // if (this.state.cont > 5) throw new Error('Error');
         console.warn('Contador: render');
-        console.warn(this.state.algo);
+        // console.warn(this.state.algo);
         return (
             <div>
                 <h1 id= "kk">{this.state.cont}</h1>
