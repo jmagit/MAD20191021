@@ -18,8 +18,21 @@ export default class Contador extends Component {
         }
         this.baja = () => this.cambia(-1);
         //this.sube = this.sube.bind(this);
+        console.warn('Contador: ')
     }
-
+    componentWillMount() {
+        console.warn('Contador: componentWillMount');
+    }
+    componentWillReceiveProps(next_props) {
+        console.warn('Contador: componentWillReceiveProps');
+    }
+    shouldComponentUpdate(next_props, next_state) {
+        console.warn('Contador:shouldComponentUpdate ');
+        return true;
+    }
+    componentWillUpdate(next_props, next_state) {
+        console.warn('Contador: componentWillUpdate');
+    }
     onCambia(valor) {
         if (this.props.onCambia) 
             this.props.onCambia(valor);
@@ -27,7 +40,7 @@ export default class Contador extends Component {
     cambia(delta) {
         // this.state.cont += delta;
         // this.setState( { cont:  this.state.cont + delta});
-        this.setState((prev, props) =>{ 
+        this.setState((prev, props) =>{             
             let rslt = prev.cont + delta * props.delta
             this.onCambia(rslt);
             return { cont: rslt }
@@ -40,6 +53,7 @@ export default class Contador extends Component {
         this.cambia(1);
     }
     render() {
+        console.warn('Contador: render');
         return (
             <div>
                 <h1>{this.state.cont}</h1>
@@ -50,5 +64,15 @@ export default class Contador extends Component {
                 </p>
             </div>
         )
+    }
+    componentDidMount() {
+       console.warn('Contador: componentDidMount');
+        
+    }
+    componentDidUpdate(next_props, next_state) {
+        console.warn('Contador: componentDidUpdate');
+    }
+    componentWillUnmount() {
+        console.warn('Contador: componentWillUnmount');
     }
 }
