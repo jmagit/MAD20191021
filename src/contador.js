@@ -18,7 +18,7 @@ export default class Contador extends Component {
         }
         this.baja = () => this.cambia(-1);
         //this.sube = this.sube.bind(this);
-        console.warn('Contador: ')
+        console.warn('Contador: constructor')
     }
     componentWillMount() {
         console.warn('Contador: componentWillMount');

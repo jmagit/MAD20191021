@@ -42,9 +42,24 @@ export default class Demos extends Component {
         }
 
         this.onCambia = (valor) => this.setState({valor: valor});
+        console.warn('Demos: constructor')
+    }
+    componentWillMount() {
+        console.warn('Demos: componentWillMount');
+    }
+    componentWillReceiveProps(next_props) {
+        console.warn('Demos: componentWillReceiveProps');
+    }
+    shouldComponentUpdate(next_props, next_state) {
+        console.warn('Demos:shouldComponentUpdate ');
+        return true;
+    }
+    componentWillUpdate(next_props, next_state) {
+        console.warn('Demos: componentWillUpdate');
     }
     
     render() {
+        console.warn('Demos: render');
         let nom = 'Don Jose';
         let attr = { nombre: this.props.nombre, mayusculas: false }
         return (
@@ -63,4 +78,14 @@ export default class Demos extends Component {
             </div>
         )
     }
-}
+    componentDidMount() {
+        console.warn('Demos: componentDidMount');
+         
+     }
+     componentDidUpdate(next_props, next_state) {
+         console.warn('Demos: componentDidUpdate');
+     }
+     componentWillUnmount() {
+         console.warn('Demos: componentWillUnmount');
+     }
+ }
