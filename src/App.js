@@ -5,6 +5,7 @@ import Demos, { Saluda } from './demos';
 import FotoMuro from './muro';
 import { Collapse, Navbar, NavbarToggler, NavbarBrand, Nav, NavItem, NavLink } from 'reactstrap';
 import { ErrorBoundary } from './ErrorBoundary';
+import { PersonaMnt } from './personas';
 
 /*class Cabecera(props) { 
   extends Component {
@@ -34,6 +35,7 @@ class App extends Component {
   constructor(props) {
     super(props)
     this.menu = [
+      { texto: 'personas', componente: <PersonaMnt /> },
       { texto: 'inicio', componente: <Saluda nombre="soy la página principal" /> },
       { texto: 'demos', componente: <Demos nombre="Desde app" /> },
       { texto: 'muro', componente: <FotoMuro /> },
