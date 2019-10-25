@@ -32,10 +32,26 @@ class PersonaForm extends Component {
             return { elemento: prev.elemento }
         });
     }
+
+    validar() {
+        let errors = {};
+        let invalid = false;
+        for (let cntr in this.form) {
+            if (!isNaN(+cntr) && this.form[cntr].name)
+                if (this.form[cntr].validity.valid)
+                    errors[cntr] = null;
+                else {
+                    errors[this.form[cntr].name] = this.form[cntr].validationMessage;
+                    invalid = true;
+                }
+        }
+        this.setState({ msgErr: errors, invalid: invalid })
+
+    }
     render() {
         return (
             <div>
-                <form ref={(f) => this.miForm = f}>
+                <form ref={(f) => this.form = f}>
                     <p>
                         <b>Código:</b>
                         <input type="number" value={this.state.elemento.id} name="id" onChange={this.handleChange} />
