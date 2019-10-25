@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import Contador from './contador';
 import { ErrorBoundary } from './ErrorBoundary';
 
-function Saluda(props) {
+export function Saluda(props) {
     console.log(`Componete saluda: ${props.nombre}`);
     return <h1>Hola {props.nombre ? (props.mayusculas ? props.nombre.toUpperCase() : props.nombre) : 'tu'}</h1>
 }
