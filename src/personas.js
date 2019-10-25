@@ -1,19 +1,103 @@
 import React, { Component } from 'react';
 import { ValidationMessage } from './comunes';
+import axios from 'axios';
 
 export class PersonaMnt extends Component {
     constructor(props) {
         super(props)
 
         this.state = {
-            elemento: { id: 1, nombre: 'Pepito111111111111', apellidos: 'Grillo', edad: 99 } //props.elemento 
+            medo: 'list',
+            listado: [],
+            elemento: {},
+            loading: true
+        }
+        this.idOriginal = null;
+        this.URL = process.env.REACT_APP_API_URL + 'personas';
+    }
+
+    list() {
+        this.setState({ loading: true })
+        axios.get(this.URL)
+            .then(resp => this.setState({ modo: 'list', listado: resp.data, loading: false }))
+            .catch(err => { console.error(`${err.status} - ${err.statusText}`); this.setState({ loading: false }) })
+    }
+    add() {
+        this.setState({ modo: 'add', elemento: { id: '', nombre: '', apellidos: '', edad: '' } })
+    }
+    edit(key) {
+        this.setState({ loading: true })
+        this.idOriginal = key;
+        axios.get(this.URL + '/' + key)
+            .then(resp => this.setState({ modo: 'edit', elemento: resp.data, loading: false }))
+            .catch(err => { console.error(`${err.status} - ${err.statusText}`); this.setState({ loading: false }) })
+    }
+    view(key) {
+        this.setState({ loading: true })
+        axios.get(this.URL + '/' + key)
+            .then(resp => this.setState({ modo: 'view', elemento: resp.data, loading: false }))
+            .catch(err => { console.error(`${err.status} - ${err.statusText}`); this.setState({ loading: false }) })
+    }
+    delete(key) {
+        if (!window.confirm('¿Seguro?')) return;
+        axios.delete(this.URL + '/' + key)
+            .then(resp => this.list())
+            .catch(err => { console.error(`${err.status} - ${err.statusText}`); this.setState({ loading: false }) })
+    }
+    cancel() {
+        this.setState({ elemento: {} });
+        this.idOriginal = null;
+        this.list();
+    }
+    send() {
+        switch (this.state.modo) {
+            case 'add':
+                axios.post(this.URL, this.state.elemento)
+                    .then(resp => this.cancel())
+                    .catch(err => { console.error(`${err.status} - ${err.statusText}`); this.setState({ loading: false }) })
+                break;
+            case 'edit':
+                axios.put(this.URL + '/' + this.idOriginal, this.state.elemento)
+                    .then(resp => this.cancel())
+                    .catch(err => { console.error(`${err.status} - ${err.statusText}`); this.setState({ loading: false }) })
+                break;
+            case 'view':
+                this.cancel();
+                break;
+            default:
         }
     }
+
     render() {
+        let comp;
+        if (this.state.loading)
+            return <p>Cargando ....</p>
+        switch (this.state.modo) {
+            case 'add':
+                comp = <PersonaForm elemento={this.state.elemento} isAdd onSend={this.send.bind(this)} onCancel={this.cancel.bind(this)} />
+                break;
+            case 'edit':
+                comp = <PersonaForm elemento={this.state.elemento} onSend={this.send.bind(this)} onCancel={this.cancel.bind(this)} />
+                break;
+            case 'view':
+                comp = <PersonaView elemento={this.state.elemento} onCancel={this.cancel.bind(this)} />
+                break;
+            default:
+                comp = <PersonasList elemento={this.state.listado} onAdd={this.add.bind(this)}  
+                    onEdit={this.edit.bind(this)} onView={this.view.bind(this)} onDelete={this.delete.bind(this)}/>
+        }
+
         return (
-            <PersonaForm elemento={this.state.elemento} />
+            { comp }
         );
     }
+}
+
+function PersonasList(prop) {
+
+}
+function PersonaView(prop) {
+
 }
 
 class PersonaForm extends Component {
