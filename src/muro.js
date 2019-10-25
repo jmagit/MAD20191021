@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import Contador from "./contador";
+import { throws } from 'assert';
 
 export class FotoCard extends Component {
   render() {
@@ -72,9 +73,11 @@ export default class FotoMuro extends Component {
       const f = Math.floor(Math.random() * this.state.listado.length);
       const c = Math.floor(Math.random() * this.state.listado[0].length);
       if (!this.state.listado[f][c]) this.cambia(f, c);
-    }, 500);
+    }, 5000);
   }
   render() {
+    if(this.state.listado[0][0]) throw new Error("Forzado");
+
     const tamaño = {
       height: this.state.dim,
       width: this.state.dim,
