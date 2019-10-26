@@ -49,15 +49,15 @@ export class PersonaMnt extends Component {
         this.idOriginal = null;
         this.list();
     }
-    send() {
+    send(elemento) {
         switch (this.state.modo) {
             case 'add':
-                axios.post(this.URL, this.state.elemento)
+                axios.post(this.URL, elemento)
                     .then(resp => this.cancel())
                     .catch(err => { console.error(`${err.status} - ${err.statusText}`); this.setState({ loading: false }) })
                 break;
             case 'edit':
-                axios.put(this.URL + '/' + this.idOriginal, this.state.elemento)
+                axios.put(this.URL + '/' + this.idOriginal, elemento)
                     .then(resp => this.cancel())
                     .catch(err => { console.error(`${err.status} - ${err.statusText}`); this.setState({ loading: false }) })
                 break;
@@ -72,15 +72,15 @@ export class PersonaMnt extends Component {
     }
 
     render() {
-        let comp;
         if (this.state.loading)
             return <Esperando />
+        let comp;
         switch (this.state.modo) {
             case 'add':
-                comp = <PersonaForm elemento={this.state.elemento} isAdd onSend={this.send.bind(this)} onCancel={this.cancel.bind(this)} />
+                comp = <PersonaForm elemento={this.state.elemento} onSend={this.send.bind(this)} onCancel={this.cancel.bind(this)} />
                 break;
             case 'edit':
-                comp = <PersonaForm elemento={this.state.elemento} onSend={this.send.bind(this)} onCancel={this.cancel.bind(this)} />
+                comp = <PersonaForm elemento={this.state.elemento} isEdit onSend={this.send.bind(this)} onCancel={this.cancel.bind(this)} />
                 break;
             case 'view':
                 comp = <PersonaView elemento={this.state.elemento} onCancel={this.cancel.bind(this)} />
@@ -90,17 +90,53 @@ export class PersonaMnt extends Component {
                     onEdit={this.edit.bind(this)} onView={this.view.bind(this)} onDelete={this.delete.bind(this)} />
         }
 
-        return (
-            comp
-        );
+        return comp;
     }
 }
 
 function PersonasList(props) {
-    return <div>Pendiente ...</div>
+    return <table className="table table-hover">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th> <input type="button" value="Añadir" onClick={e => props.onAdd()} /></th>
+            </tr>
+        </thead>
+        <tbody>
+            {props.listado.map((item) =>
+                <tr key={item.id}>
+                    <td>{item.nombre} {item.apellidos}</td>
+                    <td>
+                        <input type="button" value="Ver" onClick={e => props.onView(item.id)} />
+                        <input type="button" value="Editar" onClick={e => props.onEdit(item.id)} />
+                        <input type="button" value="Borrar" onClick={e => props.onDelete(item.id)} />
+                    </td>
+                </tr>
+            )}
+        </tbody>
+    </table>
 }
-function PersonaView(props) {
 
+function PersonaView(props) {
+    return <div>
+        <p>
+            <b>Código:</b>
+            {props.elemento.id}
+            <br />
+            <b>Nombre:</b>
+            {props.elemento.nombre}
+            <br />
+            <b>Apellidos:</b>
+            {props.elemento.apellidos}
+            <br />
+            <b>Edad:</b>
+            {props.elemento.edad}
+        </p>
+        <p>
+            <input type="button" value="Volver" onClick={props.onCancel} />
+        </p>
+
+    </div>
 }
 
 class PersonaForm extends Component {
@@ -128,15 +164,15 @@ class PersonaForm extends Component {
             if (!isNaN(+cntr) && this.form[cntr].name)
                 if (this.form[cntr].validity.valid) {
                     errors[cntr] = null;
-                    switch (this.form[cntr].name) {
-                        case 'nombre':
-                            if (this.form[cntr].value !== this.form[cntr].value.toUpperCase()) {
-                                errors[this.form[cntr].name] = 'Tiene que estar en mayusculas';
-                                invalid = true;
-                            }
-                            break;
-                        default:
-                    }
+                    // switch (this.form[cntr].name) {
+                    //     case 'nombre':
+                    //         if (this.form[cntr].value !== this.form[cntr].value.toUpperCase()) {
+                    //             errors[this.form[cntr].name] = 'Tiene que estar en mayusculas';
+                    //             invalid = true;
+                    //         }
+                    //         break;
+                    //     default:
+                    // }
                 } else {
                     errors[this.form[cntr].name] = this.form[cntr].validationMessage;
                     invalid = true;
@@ -156,8 +192,12 @@ class PersonaForm extends Component {
                 <form ref={(f) => this.form = f}>
                     <p>
                         <b>Código:</b>
-                        <input type="number" value={this.state.elemento.id} name="id" onChange={this.handleChange} required />
-                        <ValidationMessage msg={this.state.msgErr.id} />
+                        {this.props.isEdit ? <span>{this.state.elemento.id}</span> :
+                            <React.Fragment>
+                                <input type="number" value={this.state.elemento.id} name="id" onChange={this.handleChange} required />
+                                <ValidationMessage msg={this.state.msgErr.id} />
+                            </React.Fragment>
+                        }
                         <br />
                         <b>Nombre:</b>
                         <input type="text" value={this.state.elemento.nombre} name="nombre" onChange={this.handleChange}
@@ -175,11 +215,11 @@ class PersonaForm extends Component {
                         <ValidationMessage msg={this.state.msgErr.edad} />
                     </p>
                     <p>
-                        <input type="button" value="Enviar" disabled={this.state.invalid} />
-                        <input type="button" value="Volver" />
+                        <input type="button" value="Enviar" disabled={this.state.invalid}
+                            onClick={e => this.props.onSend(this.state.elemento)} />
+                        <input type="button" value="Volver" onClick={this.props.onCancel} />
                     </p>
                 </form>
-                {JSON.stringify(this.state.elemento)}
             </div>
         );
     }
