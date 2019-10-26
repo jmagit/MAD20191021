@@ -69,12 +69,16 @@ export default class FotoMuro extends Component {
     });
   }
   componentDidMount() {
-    setInterval(() => {
+    this.intervalo = setInterval(() => {
       const f = Math.floor(Math.random() * this.state.listado.length);
       const c = Math.floor(Math.random() * this.state.listado[0].length);
       if (!this.state.listado[f][c]) this.cambia(f, c);
     }, 5000);
   }
+  componentWillUnmount() {
+    clearInterval(this.intervalo);
+  }
+  
   render() {
     if(this.state.listado[0][0]) throw new Error("Forzado");
 

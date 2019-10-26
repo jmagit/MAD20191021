@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import { ValidationMessage, Esperando } from './comunes';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
-import * as db from './mi-store';
 
 export class PersonaMnt extends Component {
     constructor(props) {
@@ -15,7 +13,6 @@ export class PersonaMnt extends Component {
             loading: true
         }
         this.idOriginal = null;
-        this.urlAnt = '';
         this.URL = process.env.REACT_APP_API_URL + 'personas';
     }
 
@@ -23,47 +20,46 @@ export class PersonaMnt extends Component {
         this.setState({ loading: true })
         axios.get(this.URL)
             .then(resp => this.setState({ modo: 'list', listado: resp.data, loading: false }))
-            .catch(err => { db.NotificationAddCmd(`${err.response.status} - ${err.response.statusText}`); this.setState({ loading: false }) })
+            .catch(err => { console.error(`${err.response.status} - ${err.response.statusText}`); this.setState({ loading: false }) })
     }
     add() {
-        this.setState({ modo: 'add', elemento: { id: '', nombre: '', apellidos: '', edad: '' }, loading: false })
+        this.setState({ modo: 'add', elemento: { id: '', nombre: '', apellidos: '', edad: '' } })
     }
     edit(key) {
         this.setState({ loading: true })
         this.idOriginal = key;
         axios.get(this.URL + '/' + key)
             .then(resp => this.setState({ modo: 'edit', elemento: resp.data, loading: false }))
-            .catch(err => { db.NotificationAddCmd(`${err.response.status} - ${err.response.statusText}`); this.setState({ loading: false }) })
+            .catch(err => { console.error(`${err.response.status} - ${err.response.statusText}`); this.setState({ loading: false }) })
     }
     view(key) {
         this.setState({ loading: true })
         axios.get(this.URL + '/' + key)
             .then(resp => this.setState({ modo: 'view', elemento: resp.data, loading: false }))
-            .catch(err => { db.NotificationAddCmd(`${err.response.status} - ${err.response.statusText}`); this.setState({ loading: false }) })
+            .catch(err => { console.error(`${err.response.status} - ${err.response.statusText}`); this.setState({ loading: false }) })
     }
     delete(key) {
         if (!window.confirm('¿Seguro?')) return;
         axios.delete(this.URL + '/' + key)
             .then(resp => this.list())
-            .catch(err => { db.NotificationAddCmd(`${err.response.status} - ${err.response.statusText}`); this.setState({ loading: false }) })
+            .catch(err => { console.error(`${err.response.status} - ${err.response.statusText}`); this.setState({ loading: false }) })
     }
     cancel() {
         this.setState({ elemento: {} });
         this.idOriginal = null;
-        //this.list();
-        this.props.history.goBack();
+        this.list();
     }
     send(elemento) {
         switch (this.state.modo) {
             case 'add':
                 axios.post(this.URL, elemento)
                     .then(resp => this.cancel())
-                    .catch(err => { db.NotificationAddCmd(`${err.response.status} - ${err.response.statusText}: ${err.response.data}`); this.setState({ loading: false }) })
+                    .catch(err => { console.error(`${err.response.status} - ${err.response.statusText}: ${err.response.data}`); this.setState({ loading: false }) })
                 break;
             case 'edit':
                 axios.put(this.URL + '/' + this.idOriginal, elemento)
                     .then(resp => this.cancel())
-                    .catch(err => { db.NotificationAddCmd(`${err.response.status} - ${err.response.statusText}`); this.setState({ loading: false }) })
+                    .catch(err => { console.error(`${err.response.status} - ${err.response.statusText}`); this.setState({ loading: false }) })
                 break;
             case 'view':
                 this.cancel();
@@ -71,28 +67,8 @@ export class PersonaMnt extends Component {
             default:
         }
     }
-    enruta() {
-        if (this.props.match.url === this.urlAnt) return;
-        this.urlAnt = this.props.match.url;
-        if (this.props.match.params.id) {
-            if (this.props.match.url.endsWith('/edit')) {
-                this.edit(this.props.match.params.id);
-            } else {
-                this.view(this.props.match.params.id);
-            }
-        } else {
-            if (this.props.match.url.endsWith('/add')) {
-                this.add();
-            } else {
-                this.list();
-            }
-        }
-    }
     componentDidMount() {
-        this.enruta();
-    }
-    componentDidUpdate() {
-        this.enruta();
+        this.list();
     }
 
     render() {
@@ -123,16 +99,17 @@ function PersonasList(props) {
         <thead>
             <tr>
                 <th>Nombre</th>
-                <th><Link to='/personas/add'>Añadir</Link></th>
+                <th> <input type="button" value="Añadir" onClick={e => props.onAdd()} /></th>
             </tr>
         </thead>
         <tbody>
             {props.listado.map((item) =>
                 <tr key={item.id}>
-                    <td><Link to={'/personas/' + item.id}>{item.nombre} {item.apellidos}</Link></td>
+                    <td>{item.nombre} {item.apellidos}</td>
                     <td>
-                        <Link to={'/personas/' + item.id + '/edit'}>Editar</Link>
-                        <input className="btn btn-link" type="button" value="Borrar" onClick={e => props.onDelete(item.id)} />
+                        <input type="button" value="Ver" onClick={e => props.onView(item.id)} />
+                        <input type="button" value="Editar" onClick={e => props.onEdit(item.id)} />
+                        <input type="button" value="Borrar" onClick={e => props.onDelete(item.id)} />
                     </td>
                 </tr>
             )}

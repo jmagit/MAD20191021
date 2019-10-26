@@ -15,8 +15,8 @@ export class ErrorBoundary extends Component {
         if (this.state.hasError) { // Puedes renderizar cualquier interfaz de repuesto
             return <div>
                 <h1>ERROR</h1>
-                {this.state.error && <p>this.state.error.toString()</p>}
-                {this.state.errorInfo && <p>this.state.errorInfo.componentStack</p>}
+                {this.state.error && <p>{this.state.error.toString()}</p>}
+                {this.state.errorInfo && <p>{this.state.errorInfo.componentStack}</p>}
             </div>;
         }
         return this.props.children;

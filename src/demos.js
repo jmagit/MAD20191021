@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types';
 import Contador from './contador';
 import { ErrorBoundary } from './ErrorBoundary';
+import { ContadorStored } from './contadorStored';
+import * as db from './mi-store';
 
 export function Saluda(props) {
     console.log(`Componete saluda: ${props.nombre}`);
@@ -65,6 +67,9 @@ export default class Demos extends Component {
         let attr = { nombre: this.props.nombre, mayusculas: false }
         return (
             <div>
+                <ContadorStored />
+                <input type='button' value="UP" onClick={ e => db.CounterUpCmd()} />
+                <input type='button' value="Notifica" onClick={ e => db.NotificationAddCmd('Esto es una notificacion.')} />
                 <ErrorBoundary>
                     <Contador init={this.state.valor} delta={2} onCambia={this.onCambia } />
                 </ErrorBoundary>
@@ -83,12 +88,14 @@ export default class Demos extends Component {
     }
     componentDidMount() {
         console.warn('Demos: componentDidMount');
+        this.unsubscribe = db.store.subscribe(() => { this.setState({valor: db.store.getState().contador}); console.error('subscribe');} )
          
      }
      componentDidUpdate(next_props, next_state) {
          console.warn('Demos: componentDidUpdate');
      }
      componentWillUnmount() {
+         this.unsubscribe();
          console.warn('Demos: componentWillUnmount');
      }
  }
