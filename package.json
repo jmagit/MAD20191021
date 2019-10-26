@@ -12,8 +12,11 @@
     "prettier": "^1.18.2",
     "react": "^16.10.2",
     "react-dom": "^16.10.2",
+    "react-redux": "^7.1.1",
+    "react-router-dom": "^5.1.2",
     "react-scripts": "3.2.0",
-    "reactstrap": "^8.1.1"
+    "reactstrap": "^8.1.1",
+    "redux": "^4.0.4"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -35,5 +38,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "redux-devtools": "^3.5.0"
   }
 }

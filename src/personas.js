@@ -20,7 +20,7 @@ export class PersonaMnt extends Component {
         this.setState({ loading: true })
         axios.get(this.URL)
             .then(resp => this.setState({ modo: 'list', listado: resp.data, loading: false }))
-            .catch(err => { console.error(`${err.status} - ${err.statusText}`); this.setState({ loading: false }) })
+            .catch(err => { console.error(`${err.response.status} - ${err.response.statusText}`); this.setState({ loading: false }) })
     }
     add() {
         this.setState({ modo: 'add', elemento: { id: '', nombre: '', apellidos: '', edad: '' } })
@@ -30,19 +30,19 @@ export class PersonaMnt extends Component {
         this.idOriginal = key;
         axios.get(this.URL + '/' + key)
             .then(resp => this.setState({ modo: 'edit', elemento: resp.data, loading: false }))
-            .catch(err => { console.error(`${err.status} - ${err.statusText}`); this.setState({ loading: false }) })
+            .catch(err => { console.error(`${err.response.status} - ${err.response.statusText}`); this.setState({ loading: false }) })
     }
     view(key) {
         this.setState({ loading: true })
         axios.get(this.URL + '/' + key)
             .then(resp => this.setState({ modo: 'view', elemento: resp.data, loading: false }))
-            .catch(err => { console.error(`${err.status} - ${err.statusText}`); this.setState({ loading: false }) })
+            .catch(err => { console.error(`${err.response.status} - ${err.response.statusText}`); this.setState({ loading: false }) })
     }
     delete(key) {
         if (!window.confirm('¿Seguro?')) return;
         axios.delete(this.URL + '/' + key)
             .then(resp => this.list())
-            .catch(err => { console.error(`${err.status} - ${err.statusText}`); this.setState({ loading: false }) })
+            .catch(err => { console.error(`${err.response.status} - ${err.response.statusText}`); this.setState({ loading: false }) })
     }
     cancel() {
         this.setState({ elemento: {} });
@@ -54,12 +54,12 @@ export class PersonaMnt extends Component {
             case 'add':
                 axios.post(this.URL, elemento)
                     .then(resp => this.cancel())
-                    .catch(err => { console.error(`${err.status} - ${err.statusText}`); this.setState({ loading: false }) })
+                    .catch(err => { console.error(`${err.response.status} - ${err.response.statusText}: ${err.response.data}`); this.setState({ loading: false }) })
                 break;
             case 'edit':
                 axios.put(this.URL + '/' + this.idOriginal, elemento)
                     .then(resp => this.cancel())
-                    .catch(err => { console.error(`${err.status} - ${err.statusText}`); this.setState({ loading: false }) })
+                    .catch(err => { console.error(`${err.response.status} - ${err.response.statusText}`); this.setState({ loading: false }) })
                 break;
             case 'view':
                 this.cancel();

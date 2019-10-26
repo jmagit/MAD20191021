@@ -3,9 +3,11 @@ import logo from './logo.png';
 import './App.css';
 import Demos, { Saluda } from './demos';
 import FotoMuro from './muro';
-import { Collapse, Navbar, NavbarToggler, NavbarBrand, Nav, NavItem, NavLink } from 'reactstrap';
+import { Collapse, Navbar, NavbarToggler, NavbarBrand, Nav, NavItem, NavLink as BNavLink } from 'reactstrap';
 import { ErrorBoundary } from './ErrorBoundary';
 import { PersonaMnt } from './personas';
+import { BrowserRouter, Route, Link, NavLink, Switch, Redirect } from 'react-router-dom';
+import { PageNotFound } from './comunes';
 
 class Cabecera extends React.Component {
   constructor(props) {
@@ -21,7 +23,8 @@ class Cabecera extends React.Component {
         <Nav className="ml-auto" navbar>
           {this.props.menu.map((item, index) =>
             <NavItem key={index}>
-              <NavLink className="nav-link" onClick={e=> this.props.onSelect(index)}>{item.texto}</NavLink>
+              {/* <NavLink className="nav-link" activeClassName="active" to={item.url}>{item.texto}</NavLink> */}
+              <BNavLink className="nav-link" activeClassName="active" href={item.url}>{item.texto}</BNavLink>
             </NavItem>
           )}
         </Nav>
@@ -34,29 +37,33 @@ class App extends Component {
   constructor(props) {
     super(props)
     this.menu = [
-      { texto: 'personas', componente: <PersonaMnt /> },
-      { texto: 'inicio', componente: <Saluda nombre="soy la página principal" /> },
-      { texto: 'demos', componente: <Demos nombre="Desde app" /> },
-      { texto: 'muro', componente: <FotoMuro /> },
+      { texto: 'inicio', url: '/home' },
+      { texto: 'demos', url: '/demos' },
+      { texto: 'muro', url: '/muro/de/fotos' },
+      { texto: 'personas', url: '/personas' },
     ];
-    this.state = {
-      seleccionado: this.menu[0].componente
-    }
-    this.seleccionar = (indice) => this.setState({ seleccionado: this.menu[indice].componente });
   }
 
   render() {
     return (
       <div className="App">
-        <Cabecera menu={this.menu} onSelect={this.seleccionar} />
-        {/* <header className="App-header">
-          <p>{ this.menu.map((item, index) => <button key={index} onClick={e=>this.seleccionar(index)}>{item.texto}</button>)}</p>
-        </header> */}
-        <div className="container-fluid">
-          <ErrorBoundary>
-            { this.state.seleccionado }
-          </ErrorBoundary>
-        </div>
+        <BrowserRouter>
+          <Cabecera menu={this.menu} onSelect={this.seleccionar} />
+          <div className="container-fluid">
+            <ErrorBoundary>
+              <Switch>
+                <Redirect from="/" to="/home" exact />
+                <Route path='/home' render={() => <Saluda nombre="soy la página principal" />} exact />
+                <Route path='/demos' render={() => <Demos nombre="Desde app" />} exact />
+                <Route path='/muro/de/fotos' component={FotoMuro} exact />
+                <Route path='/personas' component={PersonaMnt} exact />
+                <Route path='/personas/:id' component={PersonaMnt} />
+                <Route path='/404.html' component={PageNotFound} exact />
+                <Route component={PageNotFound} />
+              </Switch>
+            </ErrorBoundary>
+          </div>
+        </BrowserRouter>
       </div>
     );
   }
