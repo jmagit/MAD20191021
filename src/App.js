@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
+import logo from './logo.png';
 import './App.css';
 import Demos, { Saluda } from './demos';
 import FotoMuro from './muro';
@@ -7,30 +7,29 @@ import { Collapse, Navbar, NavbarToggler, NavbarBrand, Nav, NavItem, NavLink } f
 import { ErrorBoundary } from './ErrorBoundary';
 import { PersonaMnt } from './personas';
 
-/*class Cabecera(props) { 
-  extends Component {
+class Cabecera extends React.Component {
   constructor(props) {
-    super(props)
-  return (
-    <div>
-      <Navbar color="faded" light>
-        <NavbarBrand href="/" className="mr-auto">reactstrap</NavbarBrand>
-        <NavbarToggler onClick={toggleNavbar} className="mr-2" />
-        <Collapse isOpen={!collapsed} navbar>
-          <Nav navbar>
-            <NavItem>
-              <NavLink href="/components/">Components</NavLink>
+    super(props);
+    this.state = { isOpen: false };
+    this.toggle = () => this.setState(prev => ({ isOpen: !prev.isOpen }));
+  }
+  render() {
+    return <Navbar color="light" light expand="md">
+      <NavbarBrand href="/"><img src={logo} className="App-logo" alt="logo" /></NavbarBrand>
+      <NavbarToggler aria-controls="basic-navbar-nav" onClick={this.toggle} />
+      <Collapse isOpen={this.state.isOpen} navbar>
+        <Nav className="ml-auto" navbar>
+          {this.props.menu.map((item, index) =>
+            <NavItem key={index}>
+              <NavLink className="nav-link" onClick={e=> this.props.onSelect(index)}>{item.texto}</NavLink>
             </NavItem>
-            <NavItem>
-              <NavLink href="https://github.com/reactstrap/reactstrap">GitHub</NavLink>
-            </NavItem>
-          </Nav>
-        </Collapse>
-      </Navbar>
-    </div>
-  );
+          )}
+        </Nav>
+      </Collapse>
+    </Navbar>;
+  }
+}
 
-}*/
 class App extends Component {
   constructor(props) {
     super(props)
@@ -49,9 +48,10 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <header className="App-header">
+        <Cabecera menu={this.menu} onSelect={this.seleccionar} />
+        {/* <header className="App-header">
           <p>{ this.menu.map((item, index) => <button key={index} onClick={e=>this.seleccionar(index)}>{item.texto}</button>)}</p>
-        </header>
+        </header> */}
         <div className="container-fluid">
           <ErrorBoundary>
             { this.state.seleccionado }

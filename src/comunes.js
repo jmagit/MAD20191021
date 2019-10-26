@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import loading from './loading.gif';
 
 export class ValidationMessage extends Component {
     render() {
@@ -6,5 +7,13 @@ export class ValidationMessage extends Component {
             return <span className="errorMsg">{this.props.msg}</span>;
         }
         return null;
+    }
+}
+export class Esperando extends React.Component {
+    render() {
+        return <div>
+        <div className="ajax-wait"></div>
+        <img src={loading} alt="Cargando ..." />
+      </div>;
     }
 }

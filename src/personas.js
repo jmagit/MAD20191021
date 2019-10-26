@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ValidationMessage } from './comunes';
+import { ValidationMessage, Esperando } from './comunes';
 import axios from 'axios';
 
 export class PersonaMnt extends Component {
@@ -67,11 +67,14 @@ export class PersonaMnt extends Component {
             default:
         }
     }
+    componentDidMount() {
+        this.list();
+    }
 
     render() {
         let comp;
         if (this.state.loading)
-            return <p>Cargando ....</p>
+            return <Esperando />
         switch (this.state.modo) {
             case 'add':
                 comp = <PersonaForm elemento={this.state.elemento} isAdd onSend={this.send.bind(this)} onCancel={this.cancel.bind(this)} />
@@ -83,20 +86,20 @@ export class PersonaMnt extends Component {
                 comp = <PersonaView elemento={this.state.elemento} onCancel={this.cancel.bind(this)} />
                 break;
             default:
-                comp = <PersonasList elemento={this.state.listado} onAdd={this.add.bind(this)}  
-                    onEdit={this.edit.bind(this)} onView={this.view.bind(this)} onDelete={this.delete.bind(this)}/>
+                comp = <PersonasList listado={this.state.listado} onAdd={this.add.bind(this)}
+                    onEdit={this.edit.bind(this)} onView={this.view.bind(this)} onDelete={this.delete.bind(this)} />
         }
 
         return (
-            { comp }
+            comp
         );
     }
 }
 
-function PersonasList(prop) {
-
+function PersonasList(props) {
+    return <div>Pendiente ...</div>
 }
-function PersonaView(prop) {
+function PersonaView(props) {
 
 }
 
